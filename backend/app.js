@@ -99,6 +99,30 @@ app.get("/api/niveis", (req, res) => {
   res.json(niveis);
 });
 
+app.get("/api/modalidades", (req, res) => {
+  const modalidades = db
+    .prepare("SELECT * FROM Modalidade")
+    .all(); 
+
+  res.json(modalidades);
+});
+
+app.get("/api/areas", (req, res) => {
+  const areas = db
+    .prepare("SELECT * FROM AreaEstudo")
+    .all();
+
+  res.json(areas);
+});
+
+app.get("/api/status-oportunidades", (req, res) => {
+  const statusOportunidades = db
+    .prepare("SELECT * FROM StatusOportunidade")
+    .all();
+
+  res.json(statusOportunidades);
+});
+
 app.post("/api/oportunidades", (req, res) => {
   const {
     titulo,
