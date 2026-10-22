@@ -1,9 +1,12 @@
 const express = require("express");
 const db = require("./database");
 
+const catalogosRoutes = require("./routes/catalogos");
+
 const app = express();
 
 app.use(express.json());
+app.use("/api", catalogosRoutes);
 
 const PORT = 3000;
 
@@ -88,39 +91,6 @@ app.get("/api/oportunidades/:id", (req, res) => {
   }
 
   res.json(oportunidade);
-});
-
-
-app.get("/api/niveis", (req, res) => {
-  const niveis = db
-    .prepare("SELECT * FROM NivelConhecimento")
-    .all();
-
-  res.json(niveis);
-});
-
-app.get("/api/modalidades", (req, res) => {
-  const modalidades = db
-    .prepare("SELECT * FROM Modalidade")
-    .all(); 
-
-  res.json(modalidades);
-});
-
-app.get("/api/areas", (req, res) => {
-  const areas = db
-    .prepare("SELECT * FROM AreaEstudo")
-    .all();
-
-  res.json(areas);
-});
-
-app.get("/api/status-oportunidades", (req, res) => {
-  const statusOportunidades = db
-    .prepare("SELECT * FROM StatusOportunidade")
-    .all();
-
-  res.json(statusOportunidades);
 });
 
 app.post("/api/oportunidades", (req, res) => {
