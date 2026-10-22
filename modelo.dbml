@@ -1,0 +1,136 @@
+// Entidades Principais
+Table Usuario {
+  id int [pk, increment]
+  nome varchar(100) [not null]
+  objetivo varchar(255)
+ }
+
+Table Empresa {
+  id int [pk, increment]
+  nome varchar(150) [not null]
+  }
+
+Table Fonte {
+  id int [pk, increment]
+  endereco_url varchar(255) [not null, unique]
+}
+
+Table Oportunidade {
+  id int [pk, increment]
+  titulo varchar(150) [not null]
+  descricao text [not null]
+  requisitos text [null]
+  data_final_inscricao timestamp [null]
+  modalidade_id int [not null]
+  area_de_estudo_id int [not null]
+  nivel_conhecimento_id int [not null]
+  status_oportunidade_id int [not null]
+  data_ultima_atualizacao datetime [not null]
+}
+
+// Tabelas de Dominio (Catalogos)
+
+Table Modalidade {
+  id int [pk, increment]
+  nome varchar
+}
+
+Table NivelConhecimento {
+  id int [pk, increment]
+  descricao varchar [not null, unique]
+}
+
+Table AreaEstudo {
+ id int [pk, increment]
+  nome varchar
+}
+
+Table StatusOportunidade {
+ id int [pk, increment]
+  nome varchar
+}
+
+Table Habilidade {
+  id int [pk, increment]
+  nome varchar
+}
+
+// Tabelas Associativas 
+Table UsuarioHabilidade {
+  usuario_id int [ref: > Usuario.id]
+  habilidade_id int [ref: > Habilidade.id]
+  nivelconhecimento_id int [ref: > NivelConhecimento.id]
+  indexes {
+    (usuario_id, habilidade_id) [pk] // Chave composta impede duplicatas!
+  }
+}
+
+Table EmpresaOportunidade {
+  empresa_id int
+  oportunidade_id int 
+  indexes {
+    (empresa_id, oportunidade_id) [pk]
+  }
+}
+
+Table Inscricao {
+  usuario_id int
+  oportunidade_id int
+  indexes {
+    (usuario_id, oportunidade_id) [pk] // Chave composta impede registros duplos
+  }
+}
+
+Table HabilidadeOportunidade {
+  oportunidade_id int
+  habilidade_id int
+  
+  indexes {
+    (oportunidade_id, habilidade_id) [pk]
+  }
+}
+
+Table OportunidadeFonte {
+  oportunidade_id int
+  fonte_id int
+  indexes {
+    (oportunidade_id, fonte_id) [pk] // Permite múltiplas fontes por oportunidade[cite: 3, 6]
+  }
+}
+
+Table ExperienciaUsuario {
+ id int [pk, increment]
+ usuario_id int
+ cargo varchar
+ empresa_nome varchar
+ data_inicio date
+ data_fim date
+ descricao text
+ }
+
+Table HistoricoStatus {
+  id int [pk, increment]
+  usuario_id int
+  oportunidade_id int
+  status varchar
+  data_mudanca datetime 
+}
+
+// Relacionamentos N:N (FKs)
+Ref: Inscricao.usuario_id > Usuario.id
+Ref: Inscricao.oportunidade_id > Oportunidade.id
+Ref: HabilidadeOportunidade.oportunidade_id > Oportunidade.id
+Ref: HabilidadeOportunidade.habilidade_id > Habilidade.id
+Ref: OportunidadeFonte.oportunidade_id > Oportunidade.id
+Ref: OportunidadeFonte.fonte_id > Fonte.id
+Ref: EmpresaOportunidade.empresa_id > Empresa.id
+Ref: EmpresaOportunidade.oportunidade_id > Oportunidade.id
+Ref: HistoricoStatus.usuario_id > Usuario.id
+Ref: HistoricoStatus.oportunidade_id > Oportunidade.id
+
+// Relacionamentos de Domínio (FKs)
+Ref: Oportunidade.modalidade_id > Modalidade.id
+Ref: Oportunidade.area_de_estudo_id > AreaEstudo.id
+Ref: Oportunidade.nivel_conhecimento_id > NivelConhecimento.id
+Ref: Oportunidade.status_oportunidade_id > StatusOportunidade.id
+Ref: ExperienciaUsuario.usuario_id > Usuario.id
